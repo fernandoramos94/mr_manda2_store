@@ -1,0 +1,97 @@
+<!-- 
+   Authors : initappz (Rahul Jograna)
+  Website : https://initappz.com/
+  App Name : ionic 5 foodies app
+  Created : 28-Feb-2021
+  This App Template Source code is licensed as per the
+  terms found in the Website https://initappz.com/license
+  Copyright and Good Faith Purchasers © 2020-present initappz.
+ -->
+<ion-header *ngIf="!util.appClosed">
+  <ion-toolbar color="primary">
+    <ion-title> {{util.translate('Estadisticas')}} </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding" *ngIf="!util.appClosed">
+  <ion-item>
+    <ion-label> {{util.translate('Desde la fecha')}} </ion-label>
+    <ion-datetime display-format="YYYY-MM-DD" mode="md" [(ngModel)]="from"></ion-datetime>
+  </ion-item>
+  <ion-item>
+    <ion-label> {{util.translate('Hasta la fecha')}} </ion-label>
+    <ion-datetime display-format="YYYY-MM-DD" mode="md" [(ngModel)]="to"></ion-datetime>
+  </ion-item>
+  <ion-row>
+    <ion-col size="6">
+      <ion-button (click)="getStats()" expand="block" fill="outline" size="small">
+        {{util.translate('Obtener estadistica')}}
+      </ion-button>
+    </ion-col>
+    <ion-col size="6" *ngIf="from && to && storeOrder?.length">
+      <ion-button (click)="print()" expand="block" fill="clear" size="small">
+        {{util.translate('Imprimir')}}
+      </ion-button>
+    </ion-col>
+  </ion-row>
+  <div *ngIf="from && to && storeOrder?.length" #invoiceTicket>
+    <h4 style="text-align: center;color: #ff384c;font-size: 14px;font-weight: bold;"></h4>
+    <p style="text-align: center;color: #ED7669;font-size: 12px;">Desde {{getDate(from)}} hasta {{getDate(to)}}</p>
+    <ion-row>
+      <ion-col size="3"></ion-col>
+      <ion-col size="5">
+        <p
+          style="text-align: right;font-weight: bold;margin: 0px !important;color: #ff384c;font-size: 12px;font-weight: bold;;">
+          {{util.translate('Ventas')}}</p>
+        <p
+          style="text-align: right;font-weight: bold;margin: 0px !important;color: #ff384c;;font-size: 12px;font-weight: bold;">
+          {{util.translate('Comisión')}}
+        </p>
+        <p
+          style="text-align: right;font-weight: bold;margin: 0px !important;color: #ff384c;font-size: 12px;font-weight: bold;;">
+          {{util.translate('Total a recibir')}}
+        </p>
+      </ion-col>
+      <ion-col size="4">
+        <p style="color: black !important;margin: 0px !important;text-align: right;font-size: 12px;font-weight: bold;">
+          {{util.currecny}}
+          {{totalAmount}}
+        </p>
+        <p style="color: black !important; margin: 0px !important;text-align: right;font-size: 12px;font-weight: bold;">
+          {{util.currecny}}
+          {{commisionAmount}}
+        </p>
+        <p style="color: black !important;margin: 0px !important;text-align: right;font-size: 12px;font-weight: bold;">
+          {{util.currecny}}
+          {{toPay}}</p>
+      </ion-col>
+    </ion-row>
+    <table class="table" style="font-size: 10px;width: 100%;text-align: center;">
+      <thead>
+        <tr class="text-uppercase" style="color:#ff384c ;">
+          <th> {{util.translate('ID')}} </th>
+          <th> {{util.translate('Ordenado en')}} </th>
+          <th> {{util.translate('Productos')}} </th>
+          <th> {{util.translate('Total')}} </th>
+          <th> {{util.translate('Comisión')}} </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of storeOrder" style="background-color: #F5F8FA;">
+          <td>#{{item.id}}</td>
+          <td>{{item.date_time}}</td>
+          <td>
+            <div style="width: 120px !important; white-space: pre-wrap;">
+              <span *ngFor="let orders of item.orders;let i =index;">
+                {{orders.name}} <span *ngIf="item.orders.length -1 !== i">,</span>
+              </span>
+            </div>
+          </td>
+
+          <td style="font-size: 8px;font-weight: bold;"> {{util.currecny}} {{item.grand_total}}</td>
+          <td style="font-size: 8px;font-weight: bold;">{{util.currecny}}{{getCommisions(item.grand_total)}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</ion-content>
